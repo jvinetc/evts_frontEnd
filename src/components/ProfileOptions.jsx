@@ -3,15 +3,13 @@ import { AuthContext } from '../context/AuthContext';
 import FormSell from './FormSell';
 import { useState } from 'react';
 import axios from 'axios';
-import { ENDPOINT, MOBILPOINT } from '../util/values';
-import { isMobile } from 'react-device-detect';
 
 const ProfileOptions = ({ usuario, filteredComunas, searchTerm, setSearchTerm, showModal, setIsLoad, sell, setUsuario }) => {
     const [datos, setDatos] = useState(usuario);
     const [modoEdicion, setModoEdicion] = useState(false);
     const [file, setFile] = useState('');
     const token = sessionStorage.getItem('token');
-    const url = isMobile ? MOBILPOINT : ENDPOINT;
+    const url = import.meta.env.VITE_SERVER;
     const handleChange = (e) => {
         const { name, value } = e.target;
         setDatos(prev => ({ ...prev, [name]: value }));
@@ -66,7 +64,7 @@ const ProfileOptions = ({ usuario, filteredComunas, searchTerm, setSearchTerm, s
                     {<Form.Group className="mb-3 text-center">
                         <div style={{ position: 'relative', display: 'inline-block' }}>
                             <img
-                                src={datos.Images !== null ? `${ENDPOINT}/uploads/${datos.Images[0].name}` : 'https://via.placeholder.com/120?text=Sin+Foto'}
+                                src={datos.Images !== null ? `${url}/uploads/${datos.Images[0].name}` : 'https://via.placeholder.com/120?text=Sin+Foto'}
                                 alt="Foto de perfil"
                                 className="rounded-circle border"
                                 style={{ width: '120px', height: '120px', objectFit: 'cover' }}

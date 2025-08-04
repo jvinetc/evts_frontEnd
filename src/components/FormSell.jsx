@@ -1,7 +1,6 @@
 import axios from 'axios';
 import React, { useState } from 'react'
 import { Button, Card, Dropdown, Form, InputGroup } from 'react-bootstrap'
-import { ENDPOINT } from '../util/values';
 
 const FormSell = ({ setSearchTerm, searchTerm, filteredComunas, sell, usuario, showModal, setIsLoad }) => {
     const token = sessionStorage.getItem('token');
@@ -23,6 +22,7 @@ const FormSell = ({ setSearchTerm, searchTerm, filteredComunas, sell, usuario, s
         addresPickup: sell.addresPickup,
         state: 'activo'
     });
+    const url =import.meta.env.VITE_SERVER;
     const handleSelectComuna = (drop) => {
         formData.comunaId = drop.id;
         setNombreComuna(drop.name);
@@ -40,7 +40,7 @@ const FormSell = ({ setSearchTerm, searchTerm, filteredComunas, sell, usuario, s
         }
         formData.userId = usuario.id;
         const Authorization = { headers: { Authorization: `Bearer ${token}` } };
-        axios.post(`${ENDPOINT}/sell`, formData, Authorization)
+        axios.post(`${url}/sell`, formData, Authorization)
             .then(({ status }) => {
                 if (status === 201) {
                     showModal("La tienda fue creada con exito");
@@ -60,7 +60,7 @@ const FormSell = ({ setSearchTerm, searchTerm, filteredComunas, sell, usuario, s
             return;
         }
         const Authorization = { headers: { Authorization: `Bearer ${token}` } };
-        axios.put(`${ENDPOINT}/sell`, formData, Authorization)
+        axios.put(`${url}/sell`, formData, Authorization)
             .then(({ status }) => {
                 if (status === 201) {
                     showModal("La tienda fue actualizada con exito");                    

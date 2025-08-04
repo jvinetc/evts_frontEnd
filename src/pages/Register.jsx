@@ -3,14 +3,12 @@ import React, { useState } from "react";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import { useNavigate } from "react-router-dom";
-import { ENDPOINT, MOBILPOINT } from "../util/values";
-import { isMobile } from 'react-device-detect';
 import '../styles/Register.css';
 import Modal from 'react-bootstrap/Modal';
 import { Card } from "react-bootstrap";
 
 function Register() {
-  const url = isMobile ? MOBILPOINT : ENDPOINT;
+  const url = import.meta.env.VITE_SERVER;
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -41,7 +39,7 @@ function Register() {
       alert("Las contraseñas no coinciden");
       return;
     }
-    axios.post(`${url}/user/register?isMobile=${isMobile}`, formData)
+    axios.post(`${url}/user/register`, formData)
       .then(({data, status}) => {
         if(status !== 201){
           setMenssage(data.message)

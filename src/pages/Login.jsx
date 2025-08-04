@@ -5,12 +5,10 @@ import { useNavigate } from 'react-router-dom';
 import { useContext, useState } from 'react';
 import { AuthContext } from '../context/AuthContext';
 import { TokenContext } from '../context/TokenContext';
-import { ENDPOINT, MOBILPOINT } from '../util/values';
-import { isMobile } from 'react-device-detect';
 import '../styles/Login.css';
 
 function Login() {
-  const url = isMobile ? MOBILPOINT : ENDPOINT;
+  const url = import.meta.env.VITE_SERVER;;
   const [formData, setFormData] = useState({
     email: "",
     password: "",

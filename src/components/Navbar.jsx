@@ -8,6 +8,7 @@ import Notifications from "./Notifications"; // ⬅️ asegúrate de tener este 
 import "../styles/Navbar.css";
 import { ENDPOINT } from "../util/values";
 import { BoxArrowInLeft, GearFill, HouseFill, PersonFill, Shop, SignStop } from "react-bootstrap-icons";
+import { useMediaQuery } from "react-responsive";
 
 function navbar() {
   // eslint-disable-next-line react-hooks/rules-of-hooks
@@ -31,10 +32,14 @@ function navbar() {
         });
     }
   }, [token, showNotifications]); */
+  let mobil='';
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  if (useMediaQuery({ maxWidth: 500 }))
+          mobil = '480px';
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const [activeTab, setActiveTab] = useState("home");
   return (
-    <Navbar bg="primary" fixed="bottom" className="justify-content-around border-top" style={{ maxWidth: '480px', margin: '0 auto', backgroundColor: '#f8f9fa' }}>
+    <Navbar bg="primary" fixed="bottom" className="justify-content-around border-top" style={{ maxWidth: {mobil}, margin: '0 auto', backgroundColor: '#f8f9fa' }}>
       <Container fluid>
 
         <Navbar.Toggle aria-controls="navbarResponsive" />

@@ -2,15 +2,14 @@ import React, { useContext, useEffect, useState } from 'react'
 import { AuthContext } from '../context/AuthContext';
 import { Button, Card, Dropdown, Form, Modal, SplitButton, InputGroup } from 'react-bootstrap';
 import axios from 'axios';
-import { ENDPOINT, MOBILPOINT } from '../util/values';
-import { isMobile } from 'react-device-detect';
 import DinamicTable from '../components/DinamicTable';
 import ModalCreateStop from '../components/ModalCreateStop';
 import { useNavigate } from 'react-router-dom';
+import { useMediaQuery } from 'react-responsive';
 
 const Stops = () => {
 
-    const url = isMobile ? MOBILPOINT : ENDPOINT;
+    const url = import.meta.env.VITE_SERVER;
     const [formData, setFormData] = useState({
         addresName: '',
         addres: '',
@@ -177,12 +176,16 @@ const Stops = () => {
             comuna.name.toLowerCase().includes(searchTerm.toLowerCase())
         );
     }
+
+    let mobil = '';
+    if (useMediaQuery({ maxWidth: 500 }))
+        mobil = '480px';
     return (
-        <Card className="shadow-lg p-4 mx-auto" style={{ maxWidth: '500px', marginTop: '1rem' }}>
+        <Card className="shadow-lg p-4 mx-auto" style={{ maxWidth: {mobil}, marginTop: '1rem' }}>
 
             <Card.Body>
                 <DinamicTable stops={stops} viewModal={viewModal} isLoad={isLoad} setFormData={setFormData}
-                setNombreComuna={setNombreComuna} setNombreServicio={setNombreServicio} setIsUpdate={setIsUpdate}/>
+                    setNombreComuna={setNombreComuna} setNombreServicio={setNombreServicio} setIsUpdate={setIsUpdate} />
             </Card.Body>
             <Modal show={modals.showSuccess} onHide={() => setModals(prev => ({ ...prev, showSuccess: false }))} centered>
                 <Modal.Body className="text-center">

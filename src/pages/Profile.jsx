@@ -2,8 +2,6 @@ import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../context/AuthContext";
 import axios from "axios";
 import { Button, Dropdown, Form, SplitButton, Modal } from "react-bootstrap";
-import { ENDPOINT, MOBILPOINT } from "../util/values";
-import { isMobile } from 'react-device-detect';
 import '../styles/Profile.css';
 import ProfileOptions from "../components/ProfileOptions";
 import { Link, useNavigate } from "react-router-dom";
@@ -15,7 +13,7 @@ function Profile() {
   const [comunas, setComunas] = useState();
   const [sell, setSell] = useState([]);
   const [isLoad, setIsLoad] = useState(false);
-  const url = isMobile ? MOBILPOINT : ENDPOINT;
+  const url = import.meta.env.VITE_SERVER;
 
   const [modals, setModals] = useState({
     showSuccess: false,
