@@ -1,0 +1,59 @@
+.notifications-dropdown {
+    border: 1px solid #dee2e6;
+    border-radius: 1rem;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0,1);
+    padding: 1rem;
+    width: 300px;
+}
+
+.notifications-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    padding: 0.5rem;
+    border-bottom: 1px solid #dee2e6;
+    border-radius: 0.5rem;
+    background-color: #f8f9fa;
+}
+
+.notifications-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.notifications-list li {
+    padding: 0.5rem;
+    margin-bottom: 0.5rem;
+    background-color: #f1f3f5;
+    border-radius: 0.5rem;
+}
+
+.notifications-actions {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+
+.notifications-button {
+    background-color: #0e2e3c;
+    border: 1px solid #0e2e3c;
+    padding: 0.25rem 0.75rem;
+    color: white;
+    font-size: 0.85rem;
+    border-radius: 0.5rem;
+    font-weight: bold;
+    cursor: pointer;
+    opacity: 1;
+}
+
+.notifications-button:hover {
+    background-color: #14506d;
+    border-color: #14506d;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+}

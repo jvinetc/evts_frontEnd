@@ -1,0 +1,39 @@
+.gallery-card {
+  width: 100%;
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.gallery-card .card-body {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  flex-grow: 1;
+}
+
+.gallery-card img {
+    height: 170px;
+    object-fit: cover;
+    width: 100%;
+}
+
+.gallery-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-top: 1rem;
+}
+
+.gallery-button{
+    background-color:  #0e2e3c !important;
+    border: 1px solid #0e2e3c !important;
+    opacity: 1;
+}
+
+.gallery-button:hover {
+    background-color: #14506d !important;
+    border-color: #14506d !important;
+    transition: background-color 0.3s ease, ;
+}

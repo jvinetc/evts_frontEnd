@@ -1,0 +1,97 @@
+.home-hero {
+  background-image: url('../imgs/Fondo-principal.jpg');
+  background-size: cover;
+  background-position: center;
+  height: 60vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  position: relative;
+  text-align: center;
+}
+
+.home-overlay {
+  background-color: rgba(0,0,0, 0.6);
+  padding: 2rem;
+  border-radius: 10px;
+}
+
+.home-overlay-title {
+  margin-bottom: 1.5rem;
+}
+
+.home-button {
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  background-color: #0e2e3c;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  opacity: 1;
+}
+
+.home-button:hover {
+    background-color: #14506d;
+    transition: background-color 0.3s ease, ;
+}
+
+.home-section {
+  padding: 2rem;
+  text-align: center;
+}
+
+.home-comments-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 3rem;
+  margin-top: 1.5rem;
+}
+
+.home-icons-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  font-weight: bold;
+  font-size: 1.2rem;
+}
+
+.home-icon-group {
+  display: flex;
+  align-items: center;
+}
+
+.home-icon-box {
+  width: 150px;
+  text-align: center;
+}
+
+.home-icon-text {
+  margin-top: 0.5rem;
+  font-weight: 500;
+}
+
+.home-arrow {
+  font-size: 2.1rem;
+  margin: 0 1rem;
+  padding-left: 6rem;
+}
+
+@media (max-width: 576px) {
+  .home-icons-container {
+    flex-direction: column;
+  }
+  .home-icon-group {
+    flex-direction: column;
+    align-items: center;
+  }
+  .home-arrow {
+    transform: rotate(90deg);
+    margin: 1rem 0;
+    font-size: 2.5rem;
+    padding-left: 0;
+  }
+}

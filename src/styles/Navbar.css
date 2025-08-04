@@ -1,0 +1,87 @@
+.button-nav {
+  background-color: #0e2e3c !important;
+  border: 1px solid #0e2e3c !important;
+  color: white;
+  opacity: 1;
+}
+
+.button-nav:hover {
+  background-color: #14506d !important;
+  border-color: #14506d !important;
+  transition: background-color 0.3s ease;
+}
+
+.brand-nav {
+  color: #0e2e3c;
+}
+
+.logo-nav {
+  width: 70px;
+  height: 70px;
+  display: inline-block;
+  vertical-align: top;
+}
+/* Estilo base */
+.hover-link {
+  color: #000; /* o el color que tienes por defecto */
+  transition: color 0.3s ease, background-color 0.3s ease;
+}
+
+/* Estilo cuando pasas el mouse */
+.hover-link:hover {
+  color: #ffffff; /* Cambia el color del texto */
+  background-color: #14506d; /* Cambia el fondo al pasar el mouse */
+  border-radius: 5px;
+  padding: 4px 8px;
+}
+.notifications-dropdown {
+  position: absolute;
+  top: 60px;
+  right: 20px;
+  background: white;
+  border: 1px solid #ccc;
+  width: 300px;
+  padding: 10px;
+  z-index: 1000;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.notifications-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.notifications-list {
+  list-style: none;
+  padding-left: 0;
+  max-height: 250px;
+  overflow-y: auto;
+}
+
+.icon-nav {
+  padding: 0.2rem;
+  border-radius: 0.5rem;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1); /* efecto levantado */
+}
+
+.icon-nav:hover,
+.icon-nav:focus {
+  transform: scale(1.5);
+  box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+}
+
+.icon-nav.active {
+  transform: scale(0.98);
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.2); /* efecto tecla presionada */
+  background-color: #f0f0f0;
+}
+
+.avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+}

@@ -1,0 +1,35 @@
+/* #root {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+}
+ */
+
+/* 
+Color
+Fondo #e8e0d5
+Letras  #0e2e3c
+footer #737373
+*/    
+.square-btn {
+  aspect-ratio: 1 / 1;
+  border-radius: 12px;
+  transition: transform 0.2s ease-in-out, background-color 0.3s ease;
+  background-color: #f0f0f0;
+}
+
+.square-btn:hover {
+  transform: scale(1.05);
+  background-color: #dcdcdc;
+}
+
+.animated-icon {
+  font-size: 32px;
+  margin-bottom: 8px;
+  transition: transform 0.3s ease;
+}
+
+.square-btn:hover .animated-icon {
+  transform: rotate(360deg) scale(1.2);
+}

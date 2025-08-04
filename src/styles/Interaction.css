@@ -1,0 +1,152 @@
+.interaction-background {
+  background: 
+  linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.5)),
+  url('../assets/imgs/Fondo-interaction.webp');
+  background-size: cover;
+  background-position: center;
+  min-height: 100vh;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 2rem 2rem 2rem;
+  /* gap: 30rem; */
+}
+
+.interaction-card {
+  background-color: rgba(0, 0, 0, 0.7);
+  width: 18rem; 
+  color: white;
+  margin-right: 2rem;
+}
+
+@media (max-width: 768px) {
+  .interaction-card {
+    margin-right: 0;
+    margin-bottom: 2rem;
+  }
+}
+
+.interaction-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.interaction-item {
+    background-color: transparent;
+    border: none;
+    color: white;
+    font-weight: bold;
+}
+
+.interaction-load {
+    background-color: white;
+    opacity: 0.95;
+    padding: 2rem;
+    border-radius: 15px;
+    max-width: 400px;
+    width: 100%;
+    font-size: 20px;
+}
+
+.interaction-form {
+    background-color: white;
+    opacity: 0.95;
+    padding: 2rem;
+    margin-top: 1rem;
+    border-radius: 15px;
+    max-width: 500px;
+    width: 100%;
+}
+
+.interaction-title-describe {
+    text-align: center;
+    font-size: 25px;
+    font-weight: 500;
+}
+
+.interaction-describe {
+    text-align: justify;
+}
+
+.interaction-button{
+    background-color:  #0e2e3c;
+    border: 1px solid #0e2e3c;
+    opacity: 1;
+}
+
+.interaction-button:hover {
+    background-color: #14506d;
+    border-color: #14506d;
+    transition: background-color 0.3s ease, ;
+}
+
+.interaction-coment-list {
+    padding: 0 14px;
+}
+.interaction-coment-item {
+    margin-bottom: 15px;
+}
+
+.interaction-coment-box {
+    background-color: rgb(231, 231, 231);
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.interaction-coment-text {
+    font-weight: bold;
+    font-size: 16px;
+}
+
+.interaction-carousel {
+  width: 100%;
+  max-width: 450px;
+  margin: 0 auto;
+  border-radius: 10px;
+  position: relative;
+}
+
+.interaction-carousel-img {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 4 / 2.2;
+  object-fit: cover;
+  border-radius: 10px;
+  display: block;
+}
+
+.interaction-carousel .carousel-control-prev,
+.interaction-carousel .carousel-control-next {
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+@media (max-width: 576px) {
+  .interaction-carousel {
+    max-width: 100%;
+  }
+
+  .interaction-carousel-img {
+    aspect-ratio: 4 / 3;
+  }
+}
+
+.modal-content {
+  background-color: rgba(0, 0, 0, 0.8);
+  border-radius: 10px;
+  border: none;
+  color: white;
+  padding: 1.5rem;
+}
+
+.modal-content p {
+  color: white;
+  font-weight: bold;
+  font-size: 1.3rem;
+  margin: 0;
+  text-align: center;
+}

@@ -1,0 +1,21 @@
+.table-fria th,
+.table-fria td {
+  font-size: 0.85rem;
+  vertical-align: middle;
+  background-color: #f0f4f8;
+  color: #495057;
+}
+
+.table-fria thead {
+  background-color: #5bc0de !important;
+  color: white;
+}
+
+.card {
+  background-color: #e9f1f5;
+  border-color: #5bc0de;
+}
+
+.text-info {
+  color: #17a2b8 !important;
+}
