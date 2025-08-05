@@ -2,11 +2,11 @@ import axios from 'axios';
 import React, { useState } from 'react'
 import { Button, Card, Dropdown, Form, InputGroup } from 'react-bootstrap'
 
-const FormSell = ({ setSearchTerm, searchTerm, filteredComunas, sell, usuario, showModal, setIsLoad }) => {
+const FormSell = ({ setSearchTerm, searchTerm, filteredComunas, sell, usuario, showModal, setLoading, setCreated }) => {
     const token = sessionStorage.getItem('token');
-    const [nombreComuna, setNombreComuna] = useState(sell.length===0 ?'': sell.Comuna.name);
-    const [modoEdicion, setModoEdicion] = useState( false);
-    const [formData, setFormData] = useState(sell.length===0 ? {
+    const [nombreComuna, setNombreComuna] = useState(sell.length === 0 ? '' : sell[0].Comuna.name);
+    const [modoEdicion, setModoEdicion] = useState(sell.length === 0 ? true : false);
+    const [formData, setFormData] = useState(sell.length === 0 ? {
         name: '',
         userId: '',
         comunaId: '',
@@ -14,15 +14,15 @@ const FormSell = ({ setSearchTerm, searchTerm, filteredComunas, sell, usuario, s
         addresPickup: '',
         state: 'activo'
     } : {
-        id:sell.id,
-        name: sell.name,
-        userId: sell.userId,
-        comunaId: sell.comunaId,
-        addres: sell.addres,
-        addresPickup: sell.addresPickup,
+        id: sell[0].id,
+        name: sell[0].name,
+        userId: sell[0].userId,
+        comunaId: sell[0].comunaId,
+        addres: sell[0].addres,
+        addresPickup: sell[0].addresPickup,
         state: 'activo'
     });
-    const url =import.meta.env.VITE_SERVER;
+    const url = import.meta.env.VITE_SERVER;
     const handleSelectComuna = (drop) => {
         formData.comunaId = drop.id;
         setNombreComuna(drop.name);
@@ -34,27 +34,31 @@ const FormSell = ({ setSearchTerm, searchTerm, filteredComunas, sell, usuario, s
 
     const handleSubmit = (e) => {
         e.preventDefault();
+        setLoading(true);
         if (formData.name === '' || formData.addresPickup === '' || formData.comunaId === '') {
-            showModal('Todos los campos deben ser conpletados');
+            showModal('Todos los campos deben ser completados');
             return;
         }
         formData.userId = usuario.id;
         const Authorization = { headers: { Authorization: `Bearer ${token}` } };
         axios.post(`${url}/sell`, formData, Authorization)
-            .then(({ status }) => {
+            .then(({ status,data }) => {
                 if (status === 201) {
+                    usuario.Sells[0]=data;
                     showModal("La tienda fue creada con exito");
-                    setIsLoad(false);
+                    setCreated(true);
                 }
             })
             .catch(({ response }) => {
                 showModal(response.data.message);
                 console.error(response.data.message);
-            });
+            })
+            .finally(() => setLoading(false));
     }
 
     const handleUpdate = (e) => {
         e.preventDefault();
+        setLoading(true);
         if (formData.name === '' || formData.addresPickup === '' || formData.comunaId === '') {
             showModal('Todos los campos deben ser conpletados');
             return;
@@ -63,16 +67,17 @@ const FormSell = ({ setSearchTerm, searchTerm, filteredComunas, sell, usuario, s
         axios.put(`${url}/sell`, formData, Authorization)
             .then(({ status }) => {
                 if (status === 201) {
-                    showModal("La tienda fue actualizada con exito");                    
+                    showModal("La tienda fue actualizada con exito");
                     setModoEdicion(false);
-                    setIsLoad(false);
                 }
             })
             .catch(({ response }) => {
                 showModal(response.data.message);
                 console.error(response.data.message);
-            });
+            })
+            .finally(() => setLoading(false));
     }
+
     return (
         <Card className="shadow-sm mt-4 border-info">
             <Card.Body>
@@ -129,7 +134,7 @@ const FormSell = ({ setSearchTerm, searchTerm, filteredComunas, sell, usuario, s
                         </Dropdown>
                     </Form.Group>
 
-                    {sell.length===0 ? <Button variant="success" type='submit'>Guardar tienda</Button> :
+                    {sell.length === 0 ? <Button variant="success" type='submit'>Guardar tienda</Button> :
                         !modoEdicion ?
                             <Button variant="primary" onClick={() => setModoEdicion(true)}>Editar tienda</Button> :
                             <>

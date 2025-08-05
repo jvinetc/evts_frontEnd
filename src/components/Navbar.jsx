@@ -9,10 +9,13 @@ import "../styles/Navbar.css";
 import { ENDPOINT } from "../util/values";
 import { BoxArrowInLeft, GearFill, HouseFill, PersonFill, Shop, SignStop } from "react-bootstrap-icons";
 import { useMediaQuery } from "react-responsive";
+import { AdminContext } from "../context/AdminContext";
 
 function navbar() {
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const { usuario } = useContext(AuthContext);
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  const {isAdmin} = useContext(AdminContext);
   //const [showNotifications, setShowNotifications] = useState(false);
   // const [unreadCount, setUnreadCount] = useState(0);
   /* useEffect(() => {
@@ -68,7 +71,7 @@ function navbar() {
               <small className="text-muted">Puntos</small>
             </Nav.Link>
 
-            {usuario && usuario.Role.name !== "admin" ? '' : <>
+            {!isAdmin ? '' : <>
               <div className="vr mx-2" /> < Nav.Link as={Link} to="/sell" className="text-center d-flex flex-column align-items-center">
                 <Shop size={24} className={`icon-nav ${activeTab === "sell" ? "active" : ""}`}
                   onClick={() => setActiveTab("sell")} />

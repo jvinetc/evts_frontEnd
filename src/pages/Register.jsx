@@ -1,13 +1,16 @@
 import axios from "axios";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import { useNavigate } from "react-router-dom";
 import '../styles/Register.css';
 import Modal from 'react-bootstrap/Modal';
 import { Card } from "react-bootstrap";
+import { LoadingContext } from "../context/LoadingContext";
+import { useMediaQuery } from "react-responsive";
 
 function Register() {
+  const { setLoading } = useContext(LoadingContext);
   const url = import.meta.env.VITE_SERVER;
   const [formData, setFormData] = useState({
     firstName: "",
@@ -34,14 +37,14 @@ function Register() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
+    setLoading(true)
     if (formData.password !== formData.confirmarPassword) {
       alert("Las contraseñas no coinciden");
       return;
     }
     axios.post(`${url}/user/register`, formData)
-      .then(({data, status}) => {
-        if(status !== 201){
+      .then(({ data, status }) => {
+        if (status !== 201) {
           setMenssage(data.message)
         }
         setMenssage(data.message);
@@ -52,15 +55,19 @@ function Register() {
           navigate('/');
         }, 3000);
       })
-      .catch(({response}) => {
+      .catch(({ response }) => {
         console.log(response.data.message);
         setMenssage(response.data.message);
         setShowModal(true);
+      }).finally(() => {
+        setLoading(false);
       })
   };
-
+  let mobil = '';
+  if (useMediaQuery({ maxWidth: 500 }))
+    mobil = '480px';
   return (
-    <Card className="shadow-lg p-4 mx-auto register-background" style={{ maxWidth: '500px', marginTop: '1rem' }}>
+    <Card className="shadow-lg p-4 mx-auto register-background" style={{ maxWidth: {mobil}, marginTop: '1rem' }}>
       <Card.Body>
         <h2 className="text-center mb-4 register-title">
           Registrarse

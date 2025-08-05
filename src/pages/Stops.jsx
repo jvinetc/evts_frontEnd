@@ -5,7 +5,7 @@ import axios from 'axios';
 import DinamicTable from '../components/DinamicTable';
 import ModalCreateStop from '../components/ModalCreateStop';
 import { useNavigate } from 'react-router-dom';
-import { useMediaQuery } from 'react-responsive';
+import { LoadingContext } from '../context/LoadingContext';
 
 const Stops = () => {
 
@@ -22,25 +22,28 @@ const Stops = () => {
         showSuccess: false,
         message: "",
         confirmCreate: false,
+        confirmDelete:false,
         confirmMessage: "",
         actionToConfirm: null
     });
     const token = sessionStorage.getItem('token');
     const { usuario } = useContext(AuthContext);
     const [comunas, setComunas] = useState();
-    const [stops, setStops] = useState();
+    const [stops, setStops] = useState([]);
     const [isCreate, setIsCreate] = useState(false);
-    const [isLoad, setIsLoad] = useState(false);
+    const { isLoading, setLoading } = useContext(LoadingContext);
     const [nombreComuna, setNombreComuna] = useState('');
     const [nombreServicio, setNombreServicio] = useState('');
     const [rates, setRates] = useState();
     const [isUpdate, setIsUpdate] = useState(false);
+    const [createStop, setCreateStop] = useState(false);
     const navigate = useNavigate();
     useEffect(() => {
         const loadStops = () => {
             if (!usuario)
                 navigate('/');
 
+            setLoading(true);
             try {
                 axios.get(`${url}/rate`)
                     .then(({ data }) => {
@@ -50,23 +53,26 @@ const Stops = () => {
                         console.error(response);
                         showModal(response.data.message);
                     });
-                axios.get(`${url}/stop/${usuario.Sells[0].id}`)
+                    const api= usuario.Role.name==='admin'?`${url}/stop/`:`${url}/stop/${usuario.Sells[0].id}`
+                axios.get(api)
                     .then(({ data }) => {
-                        const stopsNormalized=Array.isArray(data) ? data : [data]
+                        const stopsNormalized = Array.isArray(data) ? data : [data]
                         setStops(stopsNormalized);
-                        setIsLoad(true);
                     })
                     .catch(({ response }) => {
                         console.error(response);
                         showModal(response.data.message);
                     })
+                    loadComunas();
             } catch (error) {
                 console.error(error);
+            } finally {
+                setLoading(false);
             }
 
         }
         loadStops();
-    }, [isLoad]);
+    }, [createStop]);
 
     const loadComunas = async () => {
         await axios.get(`${url}/comuna`)
@@ -115,11 +121,13 @@ const Stops = () => {
                     if (status === 201) showModal("Delivery guardado exitosamente");
                     resetForm();
                     setIsCreate(false);
-                    setIsLoad(false);
                 })
                 .catch(({ response }) => {
                     console.log(response);
                     showModal(response.data.message);
+                })
+                .finally(() => {                   
+                    setCreateStop(true);
                 });
         });
     };
@@ -135,12 +143,12 @@ const Stops = () => {
                 .then(({ status }) => {
                     if (status === 200) showModal("Delivery actualizado exitosamente");
                     resetForm();
-                    setIsLoad(false);
                 })
                 .catch(({ response }) => {
                     console.log(response);
                     showModal(response.data.message);
-                });
+                })
+                .finally(() => setCreateStop(true));
         });
     };
 
@@ -155,9 +163,39 @@ const Stops = () => {
 
     const cancelConfirm = () => {
         setModals(prev => ({ ...prev, confirmCreate: false, confirmMessage: "", actionToConfirm: null }));
-        showModal("Guardado cancelado");
+        showModal("Se cancelo la accion");
         resetForm();
     };
+    const confirmModalDelete = (message, action) => {
+        setModals(prev => ({ ...prev, confirmMessage: message, confirmDelete: true, actionToConfirm: action }));
+    };
+
+    const cancelConfirmDelete = () => {
+        setModals(prev => ({ ...prev, confirmDelete: false, confirmMessage: "", actionToConfirm: null }));
+        showModal("Se cancelo la accion");
+    };
+
+    const handleConfirmDelete = () => {
+        if (modals.actionToConfirm) modals.actionToConfirm();
+        setModals(prev => ({ ...prev, confirmDelete: false, confirmMessage: "", actionToConfirm: null }));
+    };
+
+    const deleteStop =(stop)=>{
+        const data = {
+            id:stop.id
+        }
+        confirmModalDelete(`Vas a eliminar tu delivery con destino a ${stop.addres}.`, () => {
+            axios.put(`${url}/stop/disable`, data)
+                .then(({ status }) => {
+                    if (status === 200) showModal("Delivery eliminado exitosamente");
+                })
+                .catch(({ response }) => {
+                    console.log(response);
+                    showModal(response.data.message);
+                })
+                .finally(() => setCreateStop(true));
+        });
+    }
 
     const resetForm = () => {
         setFormData({
@@ -180,16 +218,17 @@ const Stops = () => {
         );
     }
 
-    let mobil = '';
-    if (useMediaQuery({ maxWidth: 500 }))
-        mobil = '480px';
     return (
-        <Card className="shadow-lg p-4 mx-auto" style={{ maxWidth: {mobil}, marginTop: '1rem' }}>
-
-            <Card.Body>
-                <DinamicTable stops={stops} viewModal={viewModal} isLoad={isLoad} setFormData={setFormData}
-                    setNombreComuna={setNombreComuna} setNombreServicio={setNombreServicio} setIsUpdate={setIsUpdate} />
-            </Card.Body>
+        <>
+            <Card className="shadow-lg p-4 mx-auto" style={{ width: '100%', marginTop: '1rem' }}>
+                <Card.Body style={{padding: '1.5rem 0.01rem' }}>
+                    {!isLoading && 
+                    <DinamicTable stops={stops} viewModal={viewModal} setFormData={setFormData}
+                        setNombreComuna={setNombreComuna} setNombreServicio={setNombreServicio} setIsUpdate={setIsUpdate}
+                        deleteStop={deleteStop} isLoading={isLoading} setLoading={setLoading} 
+                    comunas={comunas} showModal={showModal} usuario={usuario} setCreateStop={setCreateStop}/>}
+                </Card.Body>
+            </Card>
             <Modal show={modals.showSuccess} onHide={() => setModals(prev => ({ ...prev, showSuccess: false }))} centered>
                 <Modal.Body className="text-center">
                     <p>{modals.message}</p>
@@ -213,7 +252,15 @@ const Stops = () => {
                     <Button variant="secondary" onClick={cancelConfirm}>Cancelar</Button>
                 </Modal.Body>
             </Modal>
-        </Card>
+            <Modal show={modals.confirmDelete} onHide={cancelConfirm} centered>
+                <Modal.Body className="text-center">
+                    <p>{modals.confirmMessage}</p>
+                    <Button variant="danger" className="me-2" onClick={handleConfirmDelete}>Aceptar</Button>
+                    <Button variant="secondary" onClick={cancelConfirmDelete}>Cancelar</Button>
+                </Modal.Body>
+            </Modal>
+        </>
+
     )
 }
 

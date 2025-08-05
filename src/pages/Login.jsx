@@ -6,6 +6,8 @@ import { useContext, useState } from 'react';
 import { AuthContext } from '../context/AuthContext';
 import { TokenContext } from '../context/TokenContext';
 import '../styles/Login.css';
+import { LoadingContext } from '../context/LoadingContext';
+import { AdminContext } from '../context/AdminContext';
 
 function Login() {
   const url = import.meta.env.VITE_SERVER;;
@@ -16,6 +18,8 @@ function Login() {
 
   const { setUsuario } = useContext(AuthContext);
   const { setToken } = useContext(TokenContext);
+  const { setLoading } = useContext(LoadingContext);
+  const { setAdmin } = useContext(AdminContext);
 
   const navigate = useNavigate();
 
@@ -28,7 +32,7 @@ function Login() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
+    setLoading(true);
     axios
       .post(`${url}/user/login`, formData)
       .then(({ data, status }) => {
@@ -37,17 +41,19 @@ function Login() {
           return;
         }
         let user = data.user;
-        //const image= data.image;
-        // user.image= image?image.sample_image :"";
+        if (user.Role.name === 'admin'){
+          setAdmin(true);
+        }
         setUsuario(user); // ✅ guardamos como objeto
         sessionStorage.setItem("token", data.token); // ✅ persistimos el token
         setToken(data.token); // ✅ actualizamos el contexto
         navigate("/"); // ✅ redirige a otra ruta (perfil o publicaciones)
       })
-      .catch(({response}) => {
+      .catch(({ response }) => {
         console.error(response.data.message);
         alert(response.data.message);
-      });
+      }).
+      finally(() => setLoading(false));
   };
   return (
     <div className="login-background">

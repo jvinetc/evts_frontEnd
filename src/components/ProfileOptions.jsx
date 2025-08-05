@@ -1,10 +1,10 @@
 import { Container, Card, Button, Form } from 'react-bootstrap';
-import { AuthContext } from '../context/AuthContext';
 import FormSell from './FormSell';
 import { useState } from 'react';
 import axios from 'axios';
+import { useMediaQuery } from 'react-responsive';
 
-const ProfileOptions = ({ usuario, filteredComunas, searchTerm, setSearchTerm, showModal, setIsLoad, sell, setUsuario }) => {
+const ProfileOptions = ({ usuario, filteredComunas, searchTerm, setSearchTerm, showModal, setLoading, sell, setUsuario }) => {
     const [datos, setDatos] = useState(usuario);
     const [modoEdicion, setModoEdicion] = useState(false);
     const [file, setFile] = useState('');
@@ -29,6 +29,7 @@ const ProfileOptions = ({ usuario, filteredComunas, searchTerm, setSearchTerm, s
     };
 
     const guardarCambios = () => {
+        setLoading(true);
         if (datos.firstName === "" || datos.lastName === "" ||
             datos.email === "" || datos.phone === ""
         ) {
@@ -46,18 +47,21 @@ const ProfileOptions = ({ usuario, filteredComunas, searchTerm, setSearchTerm, s
                     setModoEdicion(false);
                     setDatos(data);
                     saveImage(datos.id);
-                    setTimeout(setUsuario(datos), 2000);
+                    setUsuario(datos);
                     showModal('Datos del usuario actualizados con exito');
-                    setIsLoad(false);
                 }
             })
             .catch(({ response }) => {
                 showModal(response.data.message)
                 console.log(response.data.message);
-            });
+            })
+            .finally(() => setLoading(false));
     };
+    let mobil = '';
+    if (useMediaQuery({ maxWidth: 500 }))
+        mobil = '480px';
     return (
-        <Container style={{ maxWidth: '600px', paddingBottom: '65px' }} className="my-4">
+        <Container style={{ maxWidth: {mobil}, paddingBottom: '65px' }} className="my-4">
             <Card className="shadow-sm">
                 <Card.Body>
                     <Card.Title className="mb-3">👤 Perfil de Usuario</Card.Title>
@@ -183,7 +187,7 @@ const ProfileOptions = ({ usuario, filteredComunas, searchTerm, setSearchTerm, s
             {/* 🏪 Zona para completar tienda y otros datos */}
             {usuario && usuario.Role.name === 'client' ?
                 <FormSell filteredComunas={filteredComunas} usuario={usuario} sell={sell}
-                    searchTerm={searchTerm} setSearchTerm={setSearchTerm} showModal={showModal} setIsLoad={setIsLoad} /> :
+                    searchTerm={searchTerm} setSearchTerm={setSearchTerm} showModal={showModal} setLoading={setLoading} /> :
                 ''}
         </Container>
     )

@@ -5,6 +5,7 @@ import { Button, Dropdown, Form, SplitButton, Modal } from "react-bootstrap";
 import '../styles/Profile.css';
 import ProfileOptions from "../components/ProfileOptions";
 import { Link, useNavigate } from "react-router-dom";
+import { LoadingContext } from "../context/LoadingContext";
 
 function Profile() {
   const { usuario, setUsuario } = useContext(AuthContext);
@@ -12,7 +13,8 @@ function Profile() {
   const [searchTerm, setSearchTerm] = useState('');
   const [comunas, setComunas] = useState();
   const [sell, setSell] = useState([]);
-  const [isLoad, setIsLoad] = useState(false);
+  const [isCreated, setCreated] = useState(false);
+  const {isLoading, setLoading} = useContext(LoadingContext);
   const url = import.meta.env.VITE_SERVER;
 
   const [modals, setModals] = useState({
@@ -31,6 +33,7 @@ function Profile() {
 
       if (!usuario)
         return navigate('/');
+      setLoading(true);
       try {
         await axios.get(`${url}/sell/${usuario.id}`)
           .then(({ data }) => {
@@ -43,13 +46,15 @@ function Profile() {
           });
         const { data } = await axios.get(`${url}/comuna`);
         setComunas(data);
-        setIsLoad(true);
+        
       } catch (error) {
         console.log(error);
+      }finally{
+        setLoading(false);
       }
     };
     getData();
-  }, [isLoad]);
+  }, [usuario, isCreated]);
 
 
   const showModal = (message) => {
@@ -76,10 +81,10 @@ function Profile() {
   
   return (
     <div className="profile-background">
-      {usuario && token && isLoad ? (
+      {usuario && token && !isLoading ? (
         <ProfileOptions usuario={usuario} sell={sell}
-          filteredComunas={filteredComunas} setUsuario={setUsuario}
-          searchTerm={searchTerm} setSearchTerm={setSearchTerm} showModal={showModal} setIsload={setIsLoad} />
+          filteredComunas={filteredComunas} setUsuario={setUsuario} setCreated={setCreated}
+          searchTerm={searchTerm} setSearchTerm={setSearchTerm} showModal={showModal} setLoading={setLoading} />
       ) : (
         <h1 className="profile-title-unauthorized">Estas en una seccion no autorizada</h1>
       )}
