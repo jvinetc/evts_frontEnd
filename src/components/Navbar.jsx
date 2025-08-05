@@ -32,14 +32,15 @@ function navbar() {
         });
     }
   }, [token, showNotifications]); */
-  let mobil='';
+  let mobil = '';
   // eslint-disable-next-line react-hooks/rules-of-hooks
   if (useMediaQuery({ maxWidth: 500 }))
-          mobil = '480px';
+    mobil = '480px';
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const [activeTab, setActiveTab] = useState("home");
+  const url = import.meta.env.VITE_SERVER;
   return (
-    <Navbar bg="primary" fixed="bottom" className="justify-content-around border-top" style={{ maxWidth: {mobil}, margin: '0 auto', backgroundColor: '#f8f9fa' }}>
+    <Navbar bg="primary" fixed="bottom" className="justify-content-around border-top" style={{ maxWidth: { mobil }, margin: '0 auto', backgroundColor: '#f8f9fa' }}>
       <Container fluid>
 
         <Navbar.Toggle aria-controls="navbarResponsive" />
@@ -54,10 +55,10 @@ function navbar() {
             </Nav.Link>
             <div className="vr mx-2" />
             <Nav.Link as={Link} to="/profile" className="text-center d-flex flex-column align-items-center">
-              {usuario.Images === null?<PersonFill size={24} className={`icon-nav ${activeTab === "profile" ? "active" : ""}`}
-                onClick={() => setActiveTab("profile")} />:
-                <img src={`${ENDPOINT}/uploads/${usuario.Images[0].name}`} className={`avatar icon-nav ${activeTab === "profile" ? "active" : ""}`}
-                onClick={() => setActiveTab("profile")}/>}
+              {usuario.Images.length === 0 ? <PersonFill size={24} className={`icon-nav ${activeTab === "profile" ? "active" : ""}`}
+                onClick={() => setActiveTab("profile")} /> :
+                <img src={`${url}/uploads/${usuario.Images[0].name}`} className={`avatar icon-nav ${activeTab === "profile" ? "active" : ""}`}
+                  onClick={() => setActiveTab("profile")} />}
               <small className="text-muted">Perfil</small>
             </Nav.Link>
             <div className="vr mx-2" />

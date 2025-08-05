@@ -52,7 +52,8 @@ const Stops = () => {
                     });
                 axios.get(`${url}/stop/${usuario.Sells[0].id}`)
                     .then(({ data }) => {
-                        setStops(data);
+                        const stopsNormalized=Array.isArray(data) ? data : [data]
+                        setStops(stopsNormalized);
                         setIsLoad(true);
                     })
                     .catch(({ response }) => {
@@ -112,6 +113,8 @@ const Stops = () => {
             axios.post(`${url}/stop`, formData, Authorization)
                 .then(({ status }) => {
                     if (status === 201) showModal("Delivery guardado exitosamente");
+                    resetForm();
+                    setIsCreate(false);
                     setIsLoad(false);
                 })
                 .catch(({ response }) => {

@@ -64,7 +64,7 @@ const ProfileOptions = ({ usuario, filteredComunas, searchTerm, setSearchTerm, s
                     {<Form.Group className="mb-3 text-center">
                         <div style={{ position: 'relative', display: 'inline-block' }}>
                             <img
-                                src={datos.Images !== null ? `${url}/uploads/${datos.Images[0].name}` : 'https://via.placeholder.com/120?text=Sin+Foto'}
+                                src={datos.Images.length > 0 ? `${url}/uploads/${datos.Images[0].name}` : 'https://tse2.mm.bing.net/th/id/OIP.VQeCBzJyv7dwSqO9T3IR4QHaHa?r=0&rs=1&pid=ImgDetMain&o=7&rm=3'}
                                 alt="Foto de perfil"
                                 className="rounded-circle border"
                                 style={{ width: '120px', height: '120px', objectFit: 'cover' }}

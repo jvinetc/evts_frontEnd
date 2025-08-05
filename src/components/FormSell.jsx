@@ -4,9 +4,9 @@ import { Button, Card, Dropdown, Form, InputGroup } from 'react-bootstrap'
 
 const FormSell = ({ setSearchTerm, searchTerm, filteredComunas, sell, usuario, showModal, setIsLoad }) => {
     const token = sessionStorage.getItem('token');
-    const [nombreComuna, setNombreComuna] = useState(sell ? sell.Comuna.name : '');
-    const [modoEdicion, setModoEdicion] = useState(!sell ? true : false);
-    const [formData, setFormData] = useState(!sell ? {
+    const [nombreComuna, setNombreComuna] = useState(sell.length===0 ?'': sell.Comuna.name);
+    const [modoEdicion, setModoEdicion] = useState( false);
+    const [formData, setFormData] = useState(sell.length===0 ? {
         name: '',
         userId: '',
         comunaId: '',
@@ -129,7 +129,7 @@ const FormSell = ({ setSearchTerm, searchTerm, filteredComunas, sell, usuario, s
                         </Dropdown>
                     </Form.Group>
 
-                    {!sell ? <Button variant="success" type='submit'>Guardar tienda</Button> :
+                    {sell.length===0 ? <Button variant="success" type='submit'>Guardar tienda</Button> :
                         !modoEdicion ?
                             <Button variant="primary" onClick={() => setModoEdicion(true)}>Editar tienda</Button> :
                             <>
