@@ -4,17 +4,22 @@ import { useState } from 'react';
 import axios from 'axios';
 import { useMediaQuery } from 'react-responsive';
 
-const ProfileOptions = ({ usuario, filteredComunas, searchTerm, setSearchTerm, showModal, setLoading, sell, setUsuario }) => {
+const ProfileOptions = ({ usuario, filteredComunas, searchTerm, setSearchTerm, showModal,
+    setCreated, setLoading, sell, setUsuario }) => {
     const [datos, setDatos] = useState(usuario);
     const [modoEdicion, setModoEdicion] = useState(false);
     const [file, setFile] = useState('');
     const token = sessionStorage.getItem('token');
+    const [previewImage, setPreviewImage] = useState(null);
     const url = import.meta.env.VITE_SERVER;
     const handleChange = (e) => {
         const { name, value } = e.target;
         setDatos(prev => ({ ...prev, [name]: value }));
     };
-    const handleFileChange = (e) => setFile([...e.target.files]);
+    const handleFileChange = (e) => {
+        setFile([...e.target.files])
+        setPreviewImage(URL.createObjectURL(e.target.files[0]));
+    };
 
     const saveImage = (id) => {
         const formData = new FormData();
@@ -42,16 +47,16 @@ const ProfileOptions = ({ usuario, filteredComunas, searchTerm, setSearchTerm, s
         }
         const Authorization = { headers: { Authorization: `Bearer ${token}` } };
         axios.put(`${url}/user`, datos, Authorization)
-            .then(({ data, status }) => {
-                if (status === 200) {
-                    setModoEdicion(false);
-                    setDatos(data);
+            .then(({ status }) => {
+                if (status === 200) {                
                     saveImage(datos.id);
+                    setModoEdicion(false);
                     setUsuario(datos);
                     showModal('Datos del usuario actualizados con exito');
                 }
             })
             .catch(({ response }) => {
+                //console.error(error)
                 showModal(response.data.message)
                 console.log(response.data.message);
             })
@@ -61,14 +66,17 @@ const ProfileOptions = ({ usuario, filteredComunas, searchTerm, setSearchTerm, s
     if (useMediaQuery({ maxWidth: 500 }))
         mobil = '480px';
     return (
-        <Container style={{ maxWidth: {mobil}, paddingBottom: '65px' }} className="my-4">
+        <Container style={{ maxWidth: { mobil }, paddingBottom: '65px' }} className="my-4">
             <Card className="shadow-sm">
                 <Card.Body>
                     <Card.Title className="mb-3">👤 Perfil de Usuario</Card.Title>
                     {<Form.Group className="mb-3 text-center">
                         <div style={{ position: 'relative', display: 'inline-block' }}>
                             <img
-                                src={datos.Images.length > 0 ? `${url}/uploads/${datos.Images[0].name}` : 'https://tse2.mm.bing.net/th/id/OIP.VQeCBzJyv7dwSqO9T3IR4QHaHa?r=0&rs=1&pid=ImgDetMain&o=7&rm=3'}
+                                src={previewImage
+                                    ? previewImage
+                                    : datos.Images.length > 0 ? `${url}/uploads/${datos.Images[0].name}`
+                                        : 'https://tse2.mm.bing.net/th/id/OIP.VQeCBzJyv7dwSqO9T3IR4QHaHa?r=0&rs=1&pid=ImgDetMain&o=7&rm=3'}
                                 alt="Foto de perfil"
                                 className="rounded-circle border"
                                 style={{ width: '120px', height: '120px', objectFit: 'cover' }}
@@ -186,7 +194,7 @@ const ProfileOptions = ({ usuario, filteredComunas, searchTerm, setSearchTerm, s
 
             {/* 🏪 Zona para completar tienda y otros datos */}
             {usuario && usuario.Role.name === 'client' ?
-                <FormSell filteredComunas={filteredComunas} usuario={usuario} sell={sell}
+                <FormSell filteredComunas={filteredComunas} usuario={usuario} sell={sell} setCreated={setCreated}
                     searchTerm={searchTerm} setSearchTerm={setSearchTerm} showModal={showModal} setLoading={setLoading} /> :
                 ''}
         </Container>

@@ -37,7 +37,7 @@ function Home() {
 
   return (
 
-    <Container className="p-16" style={{ overflowY: 'auto', height: 'calc(100vh - 112px)' }}>
+    <Container className="p-16" style={{ overflowY: 'auto'/* , height: 'calc(100vh - 112px)' */ }}>
       <Form className="mb-3">
         <FormControl type="search" placeholder="Buscar..." className="me-2" />
       </Form>

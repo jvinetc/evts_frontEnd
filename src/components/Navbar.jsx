@@ -65,13 +65,13 @@ function navbar() {
               <small className="text-muted">Perfil</small>
             </Nav.Link>
             <div className="vr mx-2" />
-            <Nav.Link as={Link} to="/stops" className="text-center d-flex flex-column align-items-center">
+            <Nav.Link as={Link} to={usuario.Sells.length === 0?'/profile':"/stops"} className="text-center d-flex flex-column align-items-center">
               <SignStop size={24} className={`icon-nav ${activeTab === "stops" ? "active" : ""}`}
-                onClick={() => setActiveTab("stops")} />
+                onClick={() =>usuario.Sells.length === 0?alert('Primero debes crear una tienda') : setActiveTab("stops")} />
               <small className="text-muted">Puntos</small>
             </Nav.Link>
 
-            {!isAdmin ? '' : <>
+            {isAdmin && <>
               <div className="vr mx-2" /> < Nav.Link as={Link} to="/sell" className="text-center d-flex flex-column align-items-center">
                 <Shop size={24} className={`icon-nav ${activeTab === "sell" ? "active" : ""}`}
                   onClick={() => setActiveTab("sell")} />

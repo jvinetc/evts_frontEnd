@@ -14,21 +14,20 @@ import { useState } from 'react';
 import * as xlsx from 'xlsx';
 import { saveAs } from 'file-saver';
 import axios from 'axios';
-import Paginator from './Pagination';
 
 const DinamicTable = ({ stops, viewModal, setFormData, setNombreComuna, setNombreServicio, setIsUpdate,
-    deleteStop, setLoading, comunas, showModal, usuario, setCreateStop, isAdmin }) => {
+    deleteStop, setLoading, comunas, showModal, usuario, setCreateStop }) => {
 
     //const isMobile = useMediaQuery({ maxWidth: 500 });
     const [selectedFile, setSelectedFile] = useState('');
     const [isXlsx, setIsXlsx] = useState(false);
     const [pagination, setPagination] = useState({
-        pageIndex: 1,
-        pageSize: 10
+        pageIndex: 0,
+        pageSize: 8
     })
     const url = import.meta.env.VITE_SERVER;
     const token = sessionStorage.getItem('token');
-    const columns = !isAdmin ? [
+    const columns = [
         {
             accessorKey: 'id',
             header: 'ID'
@@ -67,32 +66,7 @@ const DinamicTable = ({ stops, viewModal, setFormData, setNombreComuna, setNombr
             }
         }
 
-    ] : [
-        {
-            accessorKey: 'id',
-            header: 'ID'
-        },
-        {
-            accessorKey: 'addresName',
-            header: 'Nombre'
-        },
-        {
-            accessorKey: 'addres',
-            header: 'Direccion'
-        },
-        {
-            accessorKey: 'Comuna.name',
-            header: 'Comuna'
-        },
-        {
-            accessorKey: '',
-            header: 'Conductor'
-        },
-        {
-            accessorKey: 'Rate.nameService',
-            header: 'Servicio'
-        }
-    ];
+    ]
 
     const table = useReactTable({
         data: stops,
@@ -156,33 +130,6 @@ const DinamicTable = ({ stops, viewModal, setFormData, setNombreComuna, setNombr
         saveAs(blob, 'Plantilla_Stops.xlsx');
     };
 
-    const generateExcel = () => {
-        const headers = ['DIRECCION','COMUNA', 'DPTO / TORRE / REFERENCIAS', 'CLIENTE(nombre)', 'TELEFONO', 
-            'CORREO', 'NOMBRE DE TIENDA'];
-            const data = stops.map(stop=>{
-                return[
-                    stop.addres,
-                    stop.Comuna.name,
-                    stop.notes,
-                    stop.addresName,
-                    stop.phone,
-                    stop.Sell.email,
-                    stop.Sell.name
-                ];
-            });
-        // Crea hoja con headers y una fila vacía
-        const worksheet = xlsx.utils.aoa_to_sheet([headers, ...data]);
-        const workbook = xlsx.utils.book_new();
-        xlsx.utils.book_append_sheet(workbook, worksheet, 'Template');
-
-        const excelBuffer = xlsx.write(workbook, { bookType: 'xlsx', type: 'array' });
-        const blob = new Blob([excelBuffer], {
-            type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-        });
-
-        saveAs(blob, 'Compilado de stops.xlsx');
-    };
-
     const handleUpload = async (e) => {
         e.preventDefault();
         setLoading(true);
@@ -200,9 +147,9 @@ const DinamicTable = ({ stops, viewModal, setFormData, setNombreComuna, setNombr
                 const validated = validateExcelData(raw);
                 const validData = validated.map(item => {
                     const id = comunas.findIndex((comuna) => comuna.name.trim().toLowerCase() === item.comuna.trim().toLowerCase());
-                    const notes = typeof item.referencias === 'string' ? item.referencias.replace(/[()]/g, "") : '';
-                    const phone = item.telefono.toString();
-                    const comunaId = id < 0 ? 53 : id;
+                    const notes =typeof item.referencias === 'string' ? item.referencias.replace(/[()]/g, "") : '';
+                    const phone= item.telefono.toString();
+                    const comunaId= id < 0 ? 53:id;
                     return ({
                         addresName: item.cliente,
                         addres: item.direccion,
@@ -220,7 +167,7 @@ const DinamicTable = ({ stops, viewModal, setFormData, setNombreComuna, setNombr
                             showModal('Registros creados satisfactoriamente');
                         }
                         setIsXlsx(false);
-                        setCreateStop(true);
+                        setCreateStop(false);
                     })
                     .catch(({ response }) => {
                         console.log(response.data.message);
@@ -232,7 +179,6 @@ const DinamicTable = ({ stops, viewModal, setFormData, setNombreComuna, setNombr
         } catch (error) {
             console.error(error)
         } finally {
-            setCreateStop(false);
             setLoading(false);
         }
     };
@@ -271,10 +217,9 @@ const DinamicTable = ({ stops, viewModal, setFormData, setNombreComuna, setNombr
                             ))}
                         </tbody>
                     </table>
-                    <Paginator limit={pagination.pageSize} page={pagination.pageIndex} setPage={setPagination} count={stops.length}/>
                 </div> : <p>Aun no tiene paradas creadas</p>}
             {/* 📌 Botones fijos */}
-            {!isAdmin ? <Row className="mb-3 justify-content-center" >
+            <Row className="mb-3 justify-content-center" >
                 <Col xs={6}>
                     <Button variant="success" className="w-100" onClick={viewModal}>
                         Crear stopio
@@ -288,13 +233,7 @@ const DinamicTable = ({ stops, viewModal, setFormData, setNombreComuna, setNombr
                         Descargar plantilla 📄
                     </Button>
                 </Col>
-            </Row> :
-                <Col xs={6}>
-                    <Button variant="success" className="w-100" onClick={generateExcel}>
-                        Descargar Excel📄
-                    </Button>
-                </Col>
-            }
+            </Row>
             <Modal show={isXlsx} centered>
                 <Modal.Header closeButton>
                     <Modal.Title className="text-info fw-bold">Carga aqui tu excel</Modal.Title>

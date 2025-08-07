@@ -40,6 +40,7 @@ function Register() {
     setLoading(true)
     if (formData.password !== formData.confirmarPassword) {
       alert("Las contraseñas no coinciden");
+      setLoading(false);
       return;
     }
     axios.post(`${url}/user/register`, formData)
