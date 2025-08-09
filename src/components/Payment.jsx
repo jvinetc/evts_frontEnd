@@ -33,7 +33,7 @@ const Payment = ({ stops }) => {
             <div className="row align-items-center bg-light p-3 rounded shadow-sm">
                 <div className="col-12 col-md-8 mb-3 mb-md-0">
                     <label className="form-label h5">
-                        Total a pagar: <span className="text-success">${total.toLocaleString('es-CL')}.-</span>
+                        Total a pagar: <span className="text-success">${total}.-</span>
                     </label>
                 </div>
                 <div className="col-12 col-md-4 text-md-end">
