@@ -15,6 +15,7 @@ import * as xlsx from 'xlsx';
 import { saveAs } from 'file-saver';
 import axios from 'axios';
 import Paginator from './Pagination';
+import Payment from './Payment';
 
 const DinamicTable = ({ stops, viewModal, setFormData, setNombreComuna, setNombreServicio, setIsUpdate,
     deleteStop, setLoading, comunas, showModal, usuario, setCreateStop, isAdmin }) => {
@@ -157,19 +158,19 @@ const DinamicTable = ({ stops, viewModal, setFormData, setNombreComuna, setNombr
     };
 
     const generateExcel = () => {
-        const headers = ['DIRECCION','COMUNA', 'DPTO / TORRE / REFERENCIAS', 'CLIENTE(nombre)', 'TELEFONO', 
+        const headers = ['DIRECCION', 'COMUNA', 'DPTO / TORRE / REFERENCIAS', 'CLIENTE(nombre)', 'TELEFONO',
             'CORREO', 'NOMBRE DE TIENDA'];
-            const data = stops.map(stop=>{
-                return[
-                    stop.addres,
-                    stop.Comuna.name,
-                    stop.notes,
-                    stop.addresName,
-                    stop.phone,
-                    stop.Sell.email,
-                    stop.Sell.name
-                ];
-            });
+        const data = stops.map(stop => {
+            return [
+                stop.addres,
+                stop.Comuna.name,
+                stop.notes,
+                stop.addresName,
+                stop.phone,
+                stop.Sell.email,
+                stop.Sell.name
+            ];
+        });
         // Crea hoja con headers y una fila vacía
         const worksheet = xlsx.utils.aoa_to_sheet([headers, ...data]);
         const workbook = xlsx.utils.book_new();
@@ -198,21 +199,28 @@ const DinamicTable = ({ stops, viewModal, setFormData, setNombreComuna, setNombr
                 const sheetName = workbook.SheetNames[0];
                 const raw = xlsx.utils.sheet_to_json(workbook.Sheets[sheetName]);
                 const validated = validateExcelData(raw);
-                const validData = validated.map(item => {
-                    const id = comunas.findIndex((comuna) => comuna.name.trim().toLowerCase() === item.comuna.trim().toLowerCase());
+                const validData = await Promise.all(validated.map(async item => {
+                    const { data } = await axios.post(`${url}/autocomplete/${item.direccion}, ${item.comuna}`);
+                    const suggestions = data.data.suggestions;
+                    const placeId = suggestions[0].placePrediction.placeId;
+                    const { data: detail } = await axios.get(`${url}/autocomplete/detail/${placeId}`);
+                    const { streetName, streetNumber, comuna, lat, lng } = detail.data;
+                    const locality = comunas.find((cmn) => cmn.name.trim().toLowerCase() === comuna.trim().toLowerCase());
                     const notes = typeof item.referencias === 'string' ? item.referencias.replace(/[()]/g, "") : '';
                     const phone = item.telefono.toString();
-                    const comunaId = id < 0 ? 53 : id;
+                    const comunaId = locality.id;
                     return ({
                         addresName: item.cliente,
-                        addres: item.direccion,
+                        addres: `${streetName} ${streetNumber}`,
                         comunaId,
                         notes,
                         rateId: 1,
                         phone: phone,
-                        sellId: usuario.Sells[0].id
+                        sellId: usuario.Sells[0].id,
+                        lat,
+                        lng
                     })
-                });
+                }));
                 const Authorization = { headers: { Authorization: `Bearer ${token}` } };
                 axios.post(`${url}/stop/byExcel`, validData, Authorization)
                     .then(({ status }) => {
@@ -270,8 +278,14 @@ const DinamicTable = ({ stops, viewModal, setFormData, setNombreComuna, setNombr
                                 </tr>
                             ))}
                         </tbody>
+                        <tfoot>
+                            <tr>
+                                <td colSpan={6}><Payment stops={stops}/></td>
+                                
+                            </tr>
+                        </tfoot>
                     </table>
-                    <Paginator limit={pagination.pageSize} page={pagination.pageIndex} setPage={setPagination} count={stops.length}/>
+                    <Paginator limit={pagination.pageSize} page={pagination.pageIndex} setPage={setPagination} count={stops.length} />
                 </div> : <p>Aun no tiene paradas creadas</p>}
             {/* 📌 Botones fijos */}
             {!isAdmin ? <Row className="mb-3 justify-content-center" >

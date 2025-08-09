@@ -4,7 +4,7 @@ import { useState } from 'react';
 import axios from 'axios';
 import { useMediaQuery } from 'react-responsive';
 
-const ProfileOptions = ({ usuario, filteredComunas, searchTerm, setSearchTerm, showModal,
+const ProfileOptions = ({ usuario/* , filteredComunas, searchTerm, setSearchTerm */, comunas, showModal,
     setCreated, setLoading, sell, setUsuario }) => {
     const [datos, setDatos] = useState(usuario);
     const [modoEdicion, setModoEdicion] = useState(false);
@@ -194,8 +194,8 @@ const ProfileOptions = ({ usuario, filteredComunas, searchTerm, setSearchTerm, s
 
             {/* 🏪 Zona para completar tienda y otros datos */}
             {usuario && usuario.Role.name === 'client' ?
-                <FormSell filteredComunas={filteredComunas} usuario={usuario} sell={sell} setCreated={setCreated}
-                    searchTerm={searchTerm} setSearchTerm={setSearchTerm} showModal={showModal} setLoading={setLoading} /> :
+                <FormSell /* filteredComunas={filteredComunas}  */usuario={usuario} sell={sell} setCreated={setCreated}
+                    /* searchTerm={searchTerm} setSearchTerm={setSearchTerm} */ comunas={comunas} showModal={showModal} setLoading={setLoading} /> :
                 ''}
         </Container>
     )

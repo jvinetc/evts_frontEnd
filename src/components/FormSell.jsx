@@ -1,10 +1,10 @@
 import axios from 'axios';
 import React, { useState } from 'react'
 import { Button, Card, Dropdown, Form, InputGroup } from 'react-bootstrap'
+import AutoCompleteDirection from './AutoCompleteDirection';
 
-const FormSell = ({ setSearchTerm, searchTerm, filteredComunas, sell, usuario, showModal, setLoading, setCreated }) => {
+const FormSell = ({ /* setSearchTerm, searchTerm, filteredComunas, */comunas, sell, usuario, showModal, setLoading, setCreated }) => {
     const token = sessionStorage.getItem('token');
-    const [nombreComuna, setNombreComuna] = useState(sell.length === 0 ? '' : sell[0].Comuna.name);
     const [modoEdicion, setModoEdicion] = useState(sell.length === 0 ? true : false);
     const [formData, setFormData] = useState(sell.length === 0 ? {
         name: '',
@@ -12,7 +12,10 @@ const FormSell = ({ setSearchTerm, searchTerm, filteredComunas, sell, usuario, s
         comunaId: '',
         addres: '',
         addresPickup: '',
-        state: 'activo'
+        state: 'activo',
+        nameComuna:'',
+        lat:'',
+        lng:''
     } : {
         id: sell[0].id,
         name: sell[0].name,
@@ -20,20 +23,33 @@ const FormSell = ({ setSearchTerm, searchTerm, filteredComunas, sell, usuario, s
         comunaId: sell[0].comunaId,
         addres: sell[0].addres,
         addresPickup: sell[0].addresPickup,
-        state: 'activo'
+        state: 'activo',
+        nameComuna:sell[0].Comuna.name,
+        lat:sell[0].lat,
+        lng: sell[0].lng
     });
     const url = import.meta.env.VITE_SERVER;
-    const handleSelectComuna = (drop) => {
+    /* const handleSelectComuna = (drop) => {
         formData.comunaId = drop.id;
         setNombreComuna(drop.name);
-    }
+    } */
 
     const handleChange = (e) => {
         setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
     };
 
+    const handleSelect = ({ addres, comuna, lat, lng }) => {
+        const {id}= comunas.find(comun=> comun.name.trim()=== comuna.trim());
+        formData.comunaId=id;
+        formData.addresPickup=addres;
+        formData.lat=lat;
+        formData.lng=lng;
+
+    };
+
     const handleSubmit = (e) => {
         e.preventDefault();
+        console.log(formData)
         setLoading(true);
         if (formData.name === '' || formData.addresPickup === '' || formData.comunaId === '') {
             showModal('Todos los campos deben ser completados');
@@ -42,9 +58,9 @@ const FormSell = ({ setSearchTerm, searchTerm, filteredComunas, sell, usuario, s
         formData.userId = usuario.id;
         const Authorization = { headers: { Authorization: `Bearer ${token}` } };
         axios.post(`${url}/sell`, formData, Authorization)
-            .then(({ status,data }) => {
+            .then(({ status, data }) => {
                 if (status === 201) {
-                    usuario.Sells[0]=data;
+                    usuario.Sells[0] = data;
                     showModal("La tienda fue creada con exito");
                     setCreated(true);
                 }
@@ -69,6 +85,7 @@ const FormSell = ({ setSearchTerm, searchTerm, filteredComunas, sell, usuario, s
                 if (status === 201) {
                     showModal("La tienda fue actualizada con exito");
                     setModoEdicion(false);
+                    setCreated(true);
                 }
             })
             .catch(({ response }) => {
@@ -93,9 +110,10 @@ const FormSell = ({ setSearchTerm, searchTerm, filteredComunas, sell, usuario, s
 
                     <Form.Group className="mb-3">
                         <Form.Label>Dirección de retiro</Form.Label>
-                        <Form.Control type="text" required name='addresPickup'
+                        {/* <Form.Control type="text" required name='addresPickup'
                             value={formData.addresPickup} onChange={handleChange}
-                            readOnly={!modoEdicion} placeholder="Ej: Avenida Central 200" />
+                            readOnly={!modoEdicion} placeholder="Ej: Avenida Central 200" /> */}
+                    <AutoCompleteDirection onSelect={handleSelect} modoEdicion={modoEdicion} showModal={showModal} addres={`${formData.addresPickup}, ${formData.nameComuna}`} />
                     </Form.Group>
 
                     <Form.Group className="mb-3">
@@ -105,7 +123,7 @@ const FormSell = ({ setSearchTerm, searchTerm, filteredComunas, sell, usuario, s
                             readOnly={!modoEdicion} />
                     </Form.Group>
 
-                    <Form.Group className="mb-3">
+                    {/* <Form.Group className="mb-3">
                         <Dropdown>
                             <Dropdown.Toggle variant="info" id="dropdown-comuna" style={{ width: '100%' }}
                                 readOnly={!modoEdicion}>
@@ -132,7 +150,7 @@ const FormSell = ({ setSearchTerm, searchTerm, filteredComunas, sell, usuario, s
                                 )}
                             </Dropdown.Menu>
                         </Dropdown>
-                    </Form.Group>
+                    </Form.Group> */}
 
                     {sell.length === 0 ? <Button variant="success" type='submit'>Guardar tienda</Button> :
                         !modoEdicion ?

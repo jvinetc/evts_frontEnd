@@ -222,7 +222,13 @@ const Stops = () => {
             comuna.name.toLowerCase().includes(searchTerm.toLowerCase())
         );
     }
-
+    const handleSelect = ({ addres, comuna, lat, lng }) => {
+        const {id}= comunas.find(comun=> comun.name.trim()=== comuna.trim());
+        formData.comunaId=id;
+        formData.addresPickup=addres;
+        formData.lat=lat;
+        formData.lng=lng;
+    };
     return (
         <>
             <Card className="shadow-lg p-4 mx-auto" style={{ width: '100%', marginTop: '1rem' }}>
@@ -242,7 +248,7 @@ const Stops = () => {
             <ModalCreateStop show={isCreate} formData={formData} handleChange={handleChange} handleSelectRate={handleSelectRate}
                 handleSubmit={handleSubmit} filteredComunas={filteredComunas} searchTerm={searchTerm} nombreServicio={nombreServicio}
                 setSearchTerm={setSearchTerm} rates={rates} resetForm={resetForm} handleSelectComuna={handleSelectComuna} nombreComuna={nombreComuna}
-                isUpdate={isUpdate} handleUpdate={handleUpdate} />
+                isUpdate={isUpdate} handleUpdate={handleUpdate} onSelect={handleSelect} showModal={showModal} />
 
             <Modal show={modals.confirmCreate} onHide={cancelConfirm} centered>
                 <Modal.Body className="text-center">

@@ -83,7 +83,7 @@ function Profile() {
     <div className="profile-background">
       {usuario && token && !isLoading ? (
         <ProfileOptions usuario={usuario} sell={sell}
-          filteredComunas={filteredComunas} setUsuario={setUsuario} setCreated={setCreated}
+          filteredComunas={filteredComunas} setUsuario={setUsuario} setCreated={setCreated} comunas={comunas}
           searchTerm={searchTerm} setSearchTerm={setSearchTerm} showModal={showModal} setLoading={setLoading} />
       ) : (
         <h1 className="profile-title-unauthorized">Estas en una seccion no autorizada</h1>

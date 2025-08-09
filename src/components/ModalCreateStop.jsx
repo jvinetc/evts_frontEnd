@@ -1,7 +1,8 @@
 import { Modal, Button, Form, Dropdown, InputGroup } from 'react-bootstrap';
+import AutoCompleteDirection from './AutoCompleteDirection';
 
-const ModalCreateStop = ({ show, formData, handleChange, nombreServicio, rates, handleSubmit, handleSelectRate, 
-    filteredComunas, searchTerm, setSearchTerm, resetForm, handleSelectComuna, nombreComuna, isUpdate, handleUpdate }) => {
+const ModalCreateStop = ({ show, formData, handleChange, nombreServicio, rates, handleSubmit, handleSelectRate,onSelect, 
+    /* filteredComunas, searchTerm, setSearchTerm, */ resetForm, showModal,/* handleSelectComuna, nombreComuna, */ isUpdate, handleUpdate }) => {
 
     return (
         <Modal show={show} onHide={resetForm} centered>
@@ -24,18 +25,19 @@ const ModalCreateStop = ({ show, formData, handleChange, nombreServicio, rates, 
                     </Form.Floating>
 
                     <Form.Floating className="mb-3">
-                        <Form.Control
+                        {/* <Form.Control
                             type="text"
                             name="addres"
                             placeholder="Direccion"
                             value={formData.addres}
                             onChange={handleChange}
                             required
-                        />
+                        /> */}
+                        <AutoCompleteDirection modoEdicion={true} onSelect={onSelect} showModal={showModal}/>
                         <label htmlFor="formBasicLastName">Direccion</label>
                     </Form.Floating>
 
-                    <Form.Floating className="mb-3">
+                    {/* <Form.Floating className="mb-3">
                         <Dropdown>
                             <Dropdown.Toggle variant="info" id="dropdown-comuna" style={{ width: '100%' }}>
                                 {!nombreComuna ? 'Buscar Comuna' : nombreComuna}
@@ -61,7 +63,7 @@ const ModalCreateStop = ({ show, formData, handleChange, nombreServicio, rates, 
                                 )}
                             </Dropdown.Menu>
                         </Dropdown>
-                    </Form.Floating>
+                    </Form.Floating> */}
                     <Form.Floating className="mb-3">
                         <Dropdown>
                             <Dropdown.Toggle variant="info" id="dropdown-comuna" style={{ width: '100%' }}>
