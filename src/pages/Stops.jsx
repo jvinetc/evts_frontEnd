@@ -120,6 +120,7 @@ const Stops = () => {
         const Authorization = { headers: { Authorization: `Bearer ${token}` } };
         formData.userId = usuario.id;
         formData.sellId = usuario.Sells[0].id;
+        formData.buyOrder=`BO-${Date.now()}`;
         confirmModal("¿Quieres guardar tu delivery con los siguientes datos?", () => {
             axios.post(`${url}/stop`, formData, Authorization)
                 .then(({ status }) => {

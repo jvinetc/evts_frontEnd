@@ -29,10 +29,41 @@ const DinamicTable = ({ stops, viewModal, setFormData, setNombreComuna, setNombr
     })
     const url = import.meta.env.VITE_SERVER;
     const token = sessionStorage.getItem('token');
+    const [selected, setSelected] = useState([]);
+    const [total, setTotal] = useState(0);
+   
+    const toggleSelection = (stop) => {
+        setSelected(prev => {
+            const selected = prev.find(s => s === stop);
+            let newSelected;
+
+            if (selected) {
+                newSelected = prev.filter(i => i !== stop);
+                setTotal(total-Number(stop.Rate.price));
+            } else {
+                newSelected = [...prev, stop];
+                setTotal(total + Number(stop.Rate.price));
+            }
+
+            return newSelected;
+        }
+        );
+    };
     const columns = !isAdmin ? [
         {
-            accessorKey: 'id',
-            header: 'ID'
+            id: 'pagar',
+            header: 'Pagar',
+            cell: ({ row }) => {
+                const stop = row.original
+                const ocultarBotones = ['delivery', 'delivered'].includes(stop.status);
+                return ocultarBotones ? <p>En proceso de retiro... </p> : (
+                    <input
+                        type="checkbox"
+                        checked={selected.includes(stop)}
+                        onChange={() => toggleSelection(stop)}
+                    />
+                )
+            }
         },
         {
             accessorKey: 'addresName',
@@ -54,7 +85,7 @@ const DinamicTable = ({ stops, viewModal, setFormData, setNombreComuna, setNombr
             id: 'acciones',
             header: 'Acciones',
             cell: ({ row }) => {
-                const stop = row.original
+                const stop = row.original;
                 const ocultarBotones = ['delivery', 'delivered'].includes(stop.status);
                 return ocultarBotones ? null : (
                     <div>
@@ -106,10 +137,10 @@ const DinamicTable = ({ stops, viewModal, setFormData, setNombreComuna, setNombr
 
     const getCellStyle = (stop) => {
         switch (stop.status) {
-            case 'delivery':
-                return 'table-warning';
-            case 'pickUp':
+            case 'to_be_paid':
                 return 'table-danger';
+            case 'pickUp':
+                return 'table-warning';
             case 'delivered':
                 return 'table-success';
             default:
@@ -280,8 +311,8 @@ const DinamicTable = ({ stops, viewModal, setFormData, setNombreComuna, setNombr
                         </tbody>
                         <tfoot>
                             <tr>
-                                <td colSpan={6}><Payment stops={stops}/></td>
-                                
+                                <td colSpan={6}><Payment stops={selected} sellId={usuario.Sells[0].id} total={total} showModal={showModal} /></td>
+
                             </tr>
                         </tfoot>
                     </table>

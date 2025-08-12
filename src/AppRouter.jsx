@@ -11,6 +11,7 @@ import Profile from "./pages/Profile";
 import Configuration from "./pages/Configuration";
 import Logout from "./pages/Logout";
 import Stops from "./pages/Stops";
+import PaymentValidate from "./pages/PaymentValidate";
 
 
 function AppRouter() {
@@ -30,6 +31,7 @@ function AppRouter() {
           <Route path="configuration" element={<Configuration />} />
           <Route path="logout" element={<Logout />} />
           <Route path="stops" element={<Stops />} />
+          <Route path="valida_pago" element={<PaymentValidate />} />
           <Route path="*" element={<NotFound />} />
         </Route>
       </Routes>
